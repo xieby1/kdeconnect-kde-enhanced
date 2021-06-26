@@ -5,7 +5,6 @@
  */
 
 #include <QApplication>
-#include <QNetworkAccessManager>
 #include <QTimer>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
@@ -66,14 +65,6 @@ public:
     {
         qCWarning(KDECONNECT_DAEMON) << title << ":" << description;
         KNotification::event(KNotification::Error, title, description);
-    }
-
-    QNetworkAccessManager* networkAccessManager() override
-    {
-        if (!m_nam) {
-            m_nam = new KIO::AccessManager(this);
-        }
-        return m_nam;
     }
 
     KJobTrackerInterface* jobTracker() override
