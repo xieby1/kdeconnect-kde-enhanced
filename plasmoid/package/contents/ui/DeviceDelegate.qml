@@ -301,8 +301,9 @@ PlasmaComponents.ListItem
                     anchors.top: notificationLabel.bottom
                     anchors.left: notificationIcon.right
                     width: notificationLabel.width + replyButton.width + dismissButton.width
-                    PlasmaComponents.TextField {
+                    PlasmaComponents3.TextArea {
                         id: replyTextField
+                        placeholderText: i18nc("@info:placeholder", "Reply to %1…", appName)
                         Layout.fillWidth: true
                         Keys.onPressed: {
                             if ((event.key == Qt.Key_Return || event.key == Qt.Key_Enter) && !(event.modifiers & Qt.ShiftModifier)) {
@@ -316,6 +317,7 @@ PlasmaComponents.ListItem
                         }
                     }
                     PlasmaComponents3.Button {
+                        Layout.alignment: Qt.AlignBottom
                         id: replySendButton
                         text: i18n("Send")
                         icon.name: "document-send"
@@ -327,6 +329,7 @@ PlasmaComponents.ListItem
                         }
                     }
                     PlasmaComponents3.Button {
+                        Layout.alignment: Qt.AlignBottom
                         id: replyCancelButton
                         text: i18n("Cancel")
                         icon.name: "dialog-cancel"
