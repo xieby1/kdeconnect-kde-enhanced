@@ -260,6 +260,8 @@ PlasmaComponents.ListItem
                 enabled: true
                 onClicked: checked = !checked
 
+                property bool replying: false
+
                 PlasmaCore.IconItem {
                     id: notificationIcon
                     source: appIcon
@@ -268,6 +270,7 @@ PlasmaComponents.ListItem
                     anchors.left: parent.left
                 }
                 PlasmaComponents.Label {
+                    id: notificationLabel
                     text: appName + ": " + (title.length>0 ? (appName==title?notitext:title+": "+notitext) : display)
                     anchors.right: replyButton.left
                     anchors.left: notificationIcon.right
@@ -278,11 +281,11 @@ PlasmaComponents.ListItem
                 PlasmaComponents.ToolButton {
                     id: replyButton
                     visible: repliable
-                    enabled: repliable
+                    enabled: repliable && !replying
                     anchors.right: dismissButton.left
                     iconSource: "mail-reply-sender"
                     tooltip: i18n("Reply")
-                    onClicked: dbusInterface.reply();
+                    onClicked: { replying = true; replyTextField.forceActiveFocus(); }
                 }
                 PlasmaComponents.ToolButton {
                     id: dismissButton
@@ -292,6 +295,46 @@ PlasmaComponents.ListItem
                     iconSource: "window-close"
                     tooltip: i18n("Dismiss")
                     onClicked: dbusInterface.dismiss();
+                }
+                RowLayout {
+                    visible: replying
+                    anchors.top: notificationLabel.bottom
+                    anchors.left: notificationIcon.right
+                    width: notificationLabel.width + replyButton.width + dismissButton.width
+                    PlasmaComponents.TextField {
+                        id: replyTextField
+                        Layout.fillWidth: true
+                        Keys.onPressed: {
+                            if ((event.key == Qt.Key_Return || event.key == Qt.Key_Enter) && !(event.modifiers & Qt.ShiftModifier)) {
+                                replySendButton.clicked();
+                                event.accepted = true;
+                            }
+                            if (event.key == Qt.Key_Escape) {
+                                replyCancelButton.clicked();
+                                event.accepted = true;
+                            }
+                        }
+                    }
+                    PlasmaComponents3.Button {
+                        id: replySendButton
+                        text: i18n("Send")
+                        icon.name: "document-send"
+                        enabled: replyTextField.text
+                        onClicked: {
+                            dbusInterface.sendReply(replyTextField.text);
+                            replyTextField.text = "";
+                            replying = false;
+                        }
+                    }
+                    PlasmaComponents3.Button {
+                        id: replyCancelButton
+                        text: i18n("Cancel")
+                        icon.name: "dialog-cancel"
+                        onClicked: {
+                            replyTextField.text = "";
+                            replying = false;
+                        }
+                    }
                 }
             }
         }

@@ -54,6 +54,7 @@ public:
 public Q_SLOTS:
     Q_SCRIPTABLE void dismiss();
     Q_SCRIPTABLE void reply();
+    Q_SCRIPTABLE void sendReply(const QString& message);
 
 Q_SIGNALS:
     void dismissRequested(const QString& m_internalId);
