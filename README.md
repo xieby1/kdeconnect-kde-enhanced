@@ -1,3 +1,49 @@
+# KDE Connect Enhanced
+
+## Intro
+
+Make KDE Connect remote keyboard better, especially for termux!
+
+* `Enter` key works as expected, no need to be bother by `ctrl-j` any more.
+* `Ctrl-C` works as expected. You can esaily interrupt the running programs now.
+* `Ctrl-V` clipboard works. You can paste your linux's content to your android device.
+
+## Install
+
+Compile/Install is the same as original KDE Connect.
+
+### Nix/NixOS
+
+If you are Nix/NixOS user, install is simple.
+Add the following package expression in your packages list,
+e.g. `environment.systemPackages = [<ADD IT HERE>]` for NixOS configuration.nix,
+`home.packages = [<ADD IT HERE>]` for home manager.
+
+```nix
+(( import (builtins.fetchTarball {
+  url = "https://github.com/NixOS/nixpkgs/archive/08950a6e29cf7bddee466592eb790a417550f7f9.tar.gz";
+  sha256 = "0if01q2787rrqxfd6li6d9ahfqabdxw3r5lsmwzcm8fg9k0sb9r7";
+}){}).kdeconnect.overrideAttrs (old: { patches = [( pkgs.fetchpatch {
+  url = "https://raw.githubusercontent.com/xieby1/kdeconnect-kde-enhanced/4610431b932b2fab05d7e0fc55e7306dc7ff0910/diff.patch";
+  sha256 = "1d3ycpaaglr42bndajz1sxcavhm4p5k9n1rd5isjkim1w7ir8z56";
+})];}))
+```
+
+If your nixpkgs's kdeconnect verion
+is exact same with this repo verson (22.04.1).
+Install can be much simpilified like below,
+
+```nix
+( kdeconnect.overrideAttrs (old: { patches = [( pkgs.fetchpatch {
+  url = "https://raw.githubusercontent.com/xieby1/kdeconnect-kde-enhanced/4610431b932b2fab05d7e0fc55e7306dc7ff0910/diff.patch";
+  sha256 = "1d3ycpaaglr42bndajz1sxcavhm4p5k9n1rd5isjkim1w7ir8z56";
+})];}))
+```
+
+## TODO
+
+* Input method support. Currently non-English input can only use clipboard.
+
 # KDE Connect - desktop app
 
 KDE Connect is a multi-platform app that allows your devices to communicate (eg: your phone and your computer).
