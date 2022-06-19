@@ -8,7 +8,10 @@ ecm_qt_declare_logging_category(
 kdeconnect_add_plugin(kdeconnect_remotekeyboard
     SOURCES remotekeyboardplugin.cpp ${debug_file_SRCS})
 
+# find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS X11Extras)
+
 target_link_libraries(kdeconnect_remotekeyboard
     kdeconnectcore
+    Qt5::Gui
     Qt5::DBus
 )

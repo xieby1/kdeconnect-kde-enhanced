@@ -6,6 +6,8 @@
 
 #include "remotekeyboardplugin.h"
 #include <KPluginFactory>
+#include <QGuiApplication>
+#include <QClipboard>
 #include <QDebug>
 #include <QString>
 #include <QVariantMap>
@@ -91,15 +93,34 @@ void RemoteKeyboardPlugin::sendKeyPress(const QString& key, int specialKey,
                                         bool shift, bool ctrl,
                                         bool alt, bool sendAck) const
 {
-    NetworkPacket np(PACKET_TYPE_MOUSEPAD_REQUEST, {
-                          {QStringLiteral("key"), key},
-                          {QStringLiteral("specialKey"), specialKey},
-                          {QStringLiteral("shift"), shift},
-                          {QStringLiteral("ctrl"), ctrl},
-                          {QStringLiteral("alt"), alt},
-                          {QStringLiteral("sendAck"), sendAck}
-                      });
-    sendPacket(np);
+    if (key==QStringLiteral("v") && ctrl)
+    {
+        QString clipboardText =  QGuiApplication::clipboard()->text();
+        qCDebug(KDECONNECT_PLUGIN_REMOTEKEYBOARD) << "clipboard: " << clipboardText.toStdString().data();
+        NetworkPacket np(PACKET_TYPE_MOUSEPAD_REQUEST, {
+                              {QStringLiteral("key"), clipboardText},
+                              {QStringLiteral("specialKey"), specialKey},
+                              {QStringLiteral("shift"), shift},
+                              {QStringLiteral("ctrl"), false},
+                              {QStringLiteral("alt"), alt},
+                              {QStringLiteral("sendAck"), sendAck}
+                          });
+        sendPacket(np);
+    } else {
+        if (ctrl)
+            qCDebug(KDECONNECT_PLUGIN_REMOTEKEYBOARD) << "key " << key.toStdString().data() << "ctrl 1";
+        else
+            qCDebug(KDECONNECT_PLUGIN_REMOTEKEYBOARD) << "key " << key.toStdString().data() << "ctrl 0";
+        NetworkPacket np(PACKET_TYPE_MOUSEPAD_REQUEST, {
+                              {QStringLiteral("key"), key},
+                              {QStringLiteral("specialKey"), specialKey},
+                              {QStringLiteral("shift"), shift},
+                              {QStringLiteral("ctrl"), ctrl},
+                              {QStringLiteral("alt"), alt},
+                              {QStringLiteral("sendAck"), sendAck}
+                          });
+        sendPacket(np);
+    }
 }
 
 void RemoteKeyboardPlugin::sendQKeyEvent(const QVariantMap& keyEvent, bool sendAck) const
