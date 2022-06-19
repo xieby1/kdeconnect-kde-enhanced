@@ -1,5 +1,7 @@
 # KDE Connect Enhanced
 
+Use KDE Connect Enhanced together with [KDE Connect Android Enhanced](https://github.com/xieby1/kdeconnect-android-enhanced).
+
 ## Intro
 
 Make KDE Connect remote keyboard better, especially for termux!
